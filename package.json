@@ -1,0 +1,26 @@
+{
+  "name": "projeto",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon src/main.ts",
+    "test": "npx jest",
+    "compose:up": "docker compose -f docker/docker-compose.yml up -d",
+    "compose:down": "docker compose -f docker/docker-compose.yml down -v"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.7.0",
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.10",
+    "ts-jest": "^29.4.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "axios": "^1.12.2",
+    "express": "^5.1.0",
+    "pg-promise": "^12.2.0"
+  }
+}
