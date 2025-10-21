@@ -5,10 +5,11 @@
   "scripts": {
     "start": "nodemon src/main.ts",
     "test": "npx jest",
-    "compose:up": "docker compose -f docker/docker-compose.yml up -d",
-    "compose:down": "docker compose -f docker/docker-compose.yml down -v"
+    "compose:up": "docker compose up -d",
+    "compose:down": "docker compose down -v"
   },
   "devDependencies": {
+    "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.7.0",
@@ -20,6 +21,7 @@
   },
   "dependencies": {
     "axios": "^1.12.2",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "pg-promise": "^12.2.0"
   }

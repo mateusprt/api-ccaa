@@ -1,8 +1,8 @@
-DROP SCHEMA IF EXISTS ccaa;
+drop schema if exists ccca;
 
-CREATE SCHEMA ccaa;
+create schema ccca;
 
-CREATE TABLE ccaa.account (
+create table ccca.account (
   account_id uuid primary key,
   name text,
   email text,
