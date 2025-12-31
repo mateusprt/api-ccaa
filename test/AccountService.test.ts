@@ -1,0 +1,58 @@
+import { getAccount, signUp } from "../src/AccountService";
+
+test("Deve criar uma conta", async () => {
+    const input = {
+        name: "John Doe",
+        email: "john.doe@gmail.com",
+        document: "97456321558",
+        password: "asdQWE123"
+    }
+    const outputSignup = await signUp(input);
+    expect(outputSignup.accountId).toBeDefined();
+    
+    const outputGetAccount = await getAccount(outputSignup.accountId);
+    expect(outputGetAccount.name).toBe(input.name);
+    expect(outputGetAccount.email).toBe(input.email);
+    expect(outputGetAccount.document).toBe(input.document);
+    expect(outputGetAccount.password).toBe(input.password);
+});
+
+test("Não deve criar uma conta com nome inválido", async () => {
+    const input = {
+        name: "John",
+        email: "john.doe@gmail.com",
+        document: "97456321558",
+        password: "asdQWE123"
+    }
+    await expect(() => signUp(input)).rejects.toThrow(new Error('Invalid name'));
+});
+
+test("Não deve criar uma conta com email inválido", async () => {
+    const input = {
+        name: "John Doe",
+        email: "john.doe@gmail",
+        document: "97456321558",
+        password: "asdQWE123"
+    }
+    await expect(() => signUp(input)).rejects.toThrow(new Error('Invalid email'));
+});
+
+test("Não deve criar uma conta com documento inválido", async () => {
+    const input = {
+        name: "John Doe",
+        email: "john.doe@gmail.com",
+        document: "974563215",
+        password: "asdQWE123"
+    }
+    await expect(() => signUp(input)).rejects.toThrow(new Error('Invalid document'));
+});
+
+test("Não deve criar uma conta com senha inválida", async () => {
+    const input = {
+        name: "John Dow",
+        email: "john.doe@gmail.com",
+        document: "97456321558",
+        password: "asdQWE"
+    }
+    await expect(() => signUp(input)).rejects.toThrow(new Error('Invalid password'));
+});
