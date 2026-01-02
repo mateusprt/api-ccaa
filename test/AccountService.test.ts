@@ -1,6 +1,30 @@
-import { getAccount, signUp } from "../src/AccountService";
 import sinon from "sinon";
-import * as data from '../src/data';
+import AccountService from "../src/AccountService";
+import { AccountDAODatabase, AccountDAOMemory } from "../src/AccountDAO";
+
+let accountService: AccountService;
+
+beforeEach( () => {
+	const accountDAO = new AccountDAODatabase();
+	accountService = new AccountService(accountDAO);
+})
+
+test("Deve criar uma conta", async () => {
+	const input = {
+			name: "John Doe",
+			email: "john.doe@gmail.com",
+			document: "97456321558",
+			password: "asdQWE123"
+	}
+
+	const outputSignup = await accountService.signUp(input);
+	expect(outputSignup.accountId).toBeDefined();
+	const outputGetAccount = await accountService.getAccount(outputSignup.accountId);
+	expect(outputGetAccount.name).toBe(input.name);
+	expect(outputGetAccount.email).toBe(input.email);
+	expect(outputGetAccount.document).toBe(input.document);
+	expect(outputGetAccount.password).toBe(input.password);
+});
 
 test("Não deve criar uma conta com nome inválido", async () => {
 	const input = {
@@ -9,7 +33,7 @@ test("Não deve criar uma conta com nome inválido", async () => {
 			document: "97456321558",
 			password: "asdQWE123"
 	}
-	await expect(() => signUp(input)).rejects.toThrow(new Error('Invalid name'));
+	await expect(() => accountService.signUp(input)).rejects.toThrow(new Error('Invalid name'));
 });
 
 test("Não deve criar uma conta com email inválido", async () => {
@@ -19,7 +43,7 @@ test("Não deve criar uma conta com email inválido", async () => {
 			document: "97456321558",
 			password: "asdQWE123"
 	}
-	await expect(() => signUp(input)).rejects.toThrow(new Error('Invalid email'));
+	await expect(() => accountService.signUp(input)).rejects.toThrow(new Error('Invalid email'));
 });
 
 test("Não deve criar uma conta com documento inválido", async () => {
@@ -29,7 +53,7 @@ test("Não deve criar uma conta com documento inválido", async () => {
 			document: "974563215",
 			password: "asdQWE123"
 	}
-	await expect(() => signUp(input)).rejects.toThrow(new Error('Invalid document'));
+	await expect(() => accountService.signUp(input)).rejects.toThrow(new Error('Invalid document'));
 });
 
 test("Não deve criar uma conta com senha inválida", async () => {
@@ -39,7 +63,7 @@ test("Não deve criar uma conta com senha inválida", async () => {
 			document: "97456321558",
 			password: "asdQWE"
 	}
-    await expect(() => signUp(input)).rejects.toThrow(new Error('Invalid password'));
+    await expect(() => accountService.signUp(input)).rejects.toThrow(new Error('Invalid password'));
 });
 
 test("Deve criar uma conta com stub", async () => {
@@ -50,12 +74,11 @@ test("Deve criar uma conta com stub", async () => {
 			password: "asdQWE123"
 	}
 
-	const saveStub = sinon.stub(data, "saveAccount").resolves();
-	const getStub = sinon.stub(data, "getAccountById").resolves({ ...input, accountId: crypto.randomUUID() });
-	const outputSignup = await signUp(input);
+	const saveStub = sinon.stub(AccountDAODatabase.prototype, "saveAccount").resolves();
+	const getStub = sinon.stub(AccountDAODatabase.prototype, "getAccountById").resolves({ ...input, accountId: crypto.randomUUID() });
+	const outputSignup = await accountService.signUp(input);
 	expect(outputSignup.accountId).toBeDefined();
-	const outputGetAccount = await getAccount(outputSignup.accountId);
-	expect(outputGetAccount.accountId).toBeDefined();
+	const outputGetAccount = await accountService.getAccount(outputSignup.accountId);
 	expect(outputGetAccount.name).toBe(input.name);
 	expect(outputGetAccount.email).toBe(input.email);
 	expect(outputGetAccount.document).toBe(input.document);
@@ -72,11 +95,11 @@ test("Deve criar uma conta com spy", async () => {
 			password: "asdQWE123"
 	}
 
-	const saveSpy = sinon.spy(data, "saveAccount");
-	const getSpy = sinon.spy(data, "getAccountById");
-	const outputSignup = await signUp(input);
+	const saveSpy = sinon.spy(AccountDAODatabase.prototype, "saveAccount");
+	const getSpy = sinon.spy(AccountDAODatabase.prototype, "getAccountById");
+	const outputSignup = await accountService.signUp(input);
 	expect(outputSignup.accountId).toBeDefined();
-	const outputGetAccount = await getAccount(outputSignup.accountId);
+	const outputGetAccount = await accountService.getAccount(outputSignup.accountId);
 	expect(outputGetAccount.name).toBe(input.name);
 	expect(outputGetAccount.email).toBe(input.email);
 	expect(outputGetAccount.document).toBe(input.document);
@@ -98,12 +121,12 @@ test("Deve criar uma conta com mock", async () => {
 			password: "asdQWE123"
 	}
 
-	const mock = sinon.mock(data);
+	const mock = sinon.mock(AccountDAODatabase.prototype);
 	mock.expects("saveAccount").once().resolves();
 	mock.expects("getAccountById").once().resolves({...input, accountId: crypto.randomUUID()});
-	const outputSignup = await signUp(input);
+	const outputSignup = await accountService.signUp(input);
 	expect(outputSignup.accountId).toBeDefined();
-	const outputGetAccount = await getAccount(outputSignup.accountId);
+	const outputGetAccount = await accountService.getAccount(outputSignup.accountId);
 	expect(outputGetAccount.accountId).toBeDefined();
 	expect(outputGetAccount.name).toBe(input.name);
 	expect(outputGetAccount.email).toBe(input.email);
@@ -112,4 +135,23 @@ test("Deve criar uma conta com mock", async () => {
 
 	mock.verify(); // Verifica se as expectativas foram atendidas
 	mock.restore(); // Restaura o objeto original
+});
+
+test("Deve criar uma conta com fake", async () => {
+	const accountDAO = new AccountDAOMemory();
+	const accountService = new AccountService(accountDAO);
+	const input = {
+			name: "John Doe",
+			email: "john.doe@gmail.com",
+			document: "97456321558",
+			password: "asdQWE123"
+	}
+	const outputSignup = await accountService.signUp(input);
+	expect(outputSignup.accountId).toBeDefined();
+	const outputGetAccount = await accountService.getAccount(outputSignup.accountId);
+	expect(outputGetAccount.accountId).toBeDefined();
+	expect(outputGetAccount.name).toBe(input.name);
+	expect(outputGetAccount.email).toBe(input.email);
+	expect(outputGetAccount.document).toBe(input.document);
+	expect(outputGetAccount.password).toBe(input.password);
 });
