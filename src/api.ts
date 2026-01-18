@@ -1,7 +1,9 @@
+import cors from 'cors';
 import express, { Request, Response } from "express";
-import cors from 'cors'
-import AccountService from "./AccountService";
 import { AccountDAODatabase } from "./AccountDAO";
+import SignUp from "./Signup";
+import GetAccount from './GetAccount';
+import { AccountAssetDAODatabase } from './AccountAssetDAO';
 
 async function main () {
     const app = express();
@@ -9,12 +11,14 @@ async function main () {
     app.use(cors());
 
     const accountDAO = new AccountDAODatabase()
-    const accountService = new AccountService(accountDAO)
+    const accountAssetDAO = new AccountAssetDAODatabase()
+    const signUp = new SignUp(accountDAO)
+    const getAccount = new GetAccount(accountDAO, accountAssetDAO)
     
     app.post("/signup", async (req: Request, res: Response) => {
       try {
         const input = req.body;
-        const output = await accountService.signUp(input)
+        const output = await signUp.execute(input)
         res.json(output);
       } catch (err: any) {
         res.status(422).json({ message: err.message });
@@ -23,7 +27,7 @@ async function main () {
 
     app.get("/accounts/:accountId", async (req: Request, res: Response) => {
       const accountId = req.params.accountId || '';
-      const output = await accountService.getAccount(accountId);
+      const output = await getAccount.execute(accountId);
       res.json(output);
     })
 

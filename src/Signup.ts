@@ -1,11 +1,11 @@
 import { validateCpf } from "./validateCpf";
 import { AccountDAO } from './AccountDAO';
 
-export default class AccountService {
+export default class SignUp {
 
   constructor(readonly accountDAO: AccountDAO) {}
 
-  async signUp(input: any) {
+  async execute(input: Input): Promise<Output> {
     const account = {
         accountId: crypto.randomUUID(),
         name: input.name,
@@ -34,9 +34,16 @@ export default class AccountService {
         accountId: account.accountId
     };
   }
+}
 
-  async getAccount(accountId: string) {
-    return await this.accountDAO.getAccountById(accountId);
-  }
+type Input = {
+  name: string;
+  email: string;
+  document: string;
+  password: string;
+}
+
+type Output = {
+  accountId: string;
 }
 
