@@ -1,19 +1,24 @@
-import { parse } from 'path';
-import { AccountAssetDAO } from './AccountAssetDAO';
-import { AccountDAO } from './AccountDAO';
+import { AccountRepositoryDatabase } from './AccountRepository';
+import Asset from './Asset';
 
 export default class GetAccount {
 
-  constructor(readonly accountDAO: AccountDAO, readonly accountAssetDAO: AccountAssetDAO) {}
+  constructor(readonly accountRepository: AccountRepositoryDatabase) {}
 
   async execute(accountId: string): Promise<Output> {
-    const accountData = await this.accountDAO.getAccountById(accountId);
-    const accountAssetData = await this.accountAssetDAO.getAccountAssetsByAccountId(accountId);
-    accountData.assets = accountAssetData.map((accountAsset: any) => ({
-      assetId: accountAsset.asset_id,
-      quantity: parseFloat(accountAsset.quantity)
-    }));
-    return accountData
+    const account = await this.accountRepository.getAccount(accountId);
+    const output = {
+      accountId: account.accountId,
+      name: account.name,
+      email:  account.email,
+      document: account.document,
+      password: account.password,
+      assets: account.assets.map((asset: Asset) => ({
+        assetId: asset.assetId,
+        quantity: asset.quantity
+      }))
+    };
+    return output;
   }
 }
 

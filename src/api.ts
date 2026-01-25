@@ -1,19 +1,17 @@
 import cors from 'cors';
 import express, { Request, Response } from "express";
-import { AccountDAODatabase } from "./AccountDAO";
-import SignUp from "./Signup";
+import { AccountRepositoryDatabase } from './AccountRepository';
 import GetAccount from './GetAccount';
-import { AccountAssetDAODatabase } from './AccountAssetDAO';
+import SignUp from "./Signup";
 
 async function main () {
     const app = express();
     app.use(express.json());
     app.use(cors());
 
-    const accountDAO = new AccountDAODatabase()
-    const accountAssetDAO = new AccountAssetDAODatabase()
-    const signUp = new SignUp(accountDAO)
-    const getAccount = new GetAccount(accountDAO, accountAssetDAO)
+    const accountRepository = new AccountRepositoryDatabase();
+    const signUp = new SignUp(accountRepository)
+    const getAccount = new GetAccount(accountRepository)
     
     app.post("/signup", async (req: Request, res: Response) => {
       try {

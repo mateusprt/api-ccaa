@@ -1,5 +1,4 @@
-import { AccountAssetDAODatabase } from "../src/AccountAssetDAO";
-import { AccountDAODatabase } from "../src/AccountDAO";
+import { AccountRepositoryDatabase } from "../src/AccountRepository";
 import Deposit from "../src/Deposit";
 import GetAccount from "../src/GetAccount";
 import SignUp from "../src/Signup";
@@ -11,12 +10,11 @@ let deposit: Deposit;
 let withdraw: Withdraw;
 
 beforeEach( () => {
-	const accountDAO = new AccountDAODatabase();
-	const accountAssetDAO = new AccountAssetDAODatabase()
-	signUp = new SignUp(accountDAO);
-	getAccount = new GetAccount(accountDAO, accountAssetDAO);
-	deposit = new Deposit(accountDAO, accountAssetDAO);
-	withdraw = new Withdraw(accountDAO, accountAssetDAO);
+	const accountRepository = new AccountRepositoryDatabase()
+	signUp = new SignUp(accountRepository);
+	getAccount = new GetAccount(accountRepository);
+	deposit = new Deposit(accountRepository);
+	withdraw = new Withdraw(accountRepository);
 })
 
 test("Deve fazer um saque", async () => {

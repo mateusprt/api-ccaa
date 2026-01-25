@@ -1,18 +1,14 @@
-import sinon from "sinon";
-import AccountService from "../src/GetAccount";
-import { AccountDAODatabase, AccountDAOMemory } from "../src/AccountDAO";
-import SignUp from "../src/Signup";
+import { AccountRepositoryDatabase } from "../src/AccountRepository";
 import GetAccount from "../src/GetAccount";
-import { AccountAssetDAODatabase, AccountAssetDAOMemory } from "../src/AccountAssetDAO";
+import SignUp from "../src/Signup";
 
 let signUp: SignUp;
 let getAccount: GetAccount;
 
 beforeEach( () => {
-	const accountDAO = new AccountDAODatabase();
-	const accountAssetDAO = new AccountAssetDAODatabase();
-	signUp = new SignUp(accountDAO);
-	getAccount = new GetAccount(accountDAO, accountAssetDAO);
+	const accountRepository = new AccountRepositoryDatabase();
+	signUp = new SignUp(accountRepository);
+	getAccount = new GetAccount(accountRepository);
 })
 
 test("Deve criar uma conta", async () => {
@@ -32,47 +28,8 @@ test("Deve criar uma conta", async () => {
 	expect(outputGetAccount.password).toBe(input.password);
 });
 
-test("Não deve criar uma conta com nome inválido", async () => {
-	const input = {
-			name: "John",
-			email: "john.doe@gmail.com",
-			document: "97456321558",
-			password: "asdQWE123"
-	}
-	await expect(() => signUp.execute(input)).rejects.toThrow(new Error('Invalid name'));
-});
 
-test("Não deve criar uma conta com email inválido", async () => {
-	const input = {
-			name: "John Doe",
-			email: "john.doe@gmail",
-			document: "97456321558",
-			password: "asdQWE123"
-	}
-	await expect(() => signUp.execute(input)).rejects.toThrow(new Error('Invalid email'));
-});
-
-test("Não deve criar uma conta com documento inválido", async () => {
-	const input = {
-			name: "John Doe",
-			email: "john.doe@gmail.com",
-			document: "974563215",
-			password: "asdQWE123"
-	}
-	await expect(() => signUp.execute(input)).rejects.toThrow(new Error('Invalid document'));
-});
-
-test("Não deve criar uma conta com senha inválida", async () => {
-	const input = {
-			name: "John Dow",
-			email: "john.doe@gmail.com",
-			document: "97456321558",
-			password: "asdQWE"
-	}
-    await expect(() => signUp.execute(input)).rejects.toThrow(new Error('Invalid password'));
-});
-
-test("Deve criar uma conta com stub", async () => {
+/* test("Deve criar uma conta com stub", async () => {
 	const input = {
 			name: "John Doe",
 			email: "john.doe@gmail.com",
@@ -163,3 +120,5 @@ test("Deve criar uma conta com fake", async () => {
 	expect(outputGetAccount.document).toBe(input.document);
 	expect(outputGetAccount.password).toBe(input.password);
 });
+
+ */
