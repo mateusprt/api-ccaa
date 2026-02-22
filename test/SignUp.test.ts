@@ -1,14 +1,21 @@
 import { AccountRepositoryDatabase } from "../src/AccountRepository";
+import { PgPromiseAdapter } from "../src/DatabaseConnection";
 import GetAccount from "../src/GetAccount";
 import SignUp from "../src/Signup";
 
 let signUp: SignUp;
 let getAccount: GetAccount;
+let connection: PgPromiseAdapter;
 
 beforeEach( () => {
-	const accountRepository = new AccountRepositoryDatabase();
+	connection = new PgPromiseAdapter();
+	const accountRepository = new AccountRepositoryDatabase(connection);
 	signUp = new SignUp(accountRepository);
 	getAccount = new GetAccount(accountRepository);
+})
+
+afterEach(async () => {
+	await connection.close();
 })
 
 test("Deve criar uma conta", async () => {

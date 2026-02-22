@@ -1,4 +1,5 @@
 import { AccountRepositoryDatabase } from "../src/AccountRepository";
+import { PgPromiseAdapter } from "../src/DatabaseConnection";
 import Deposit from "../src/Deposit";
 import GetAccount from "../src/GetAccount";
 import SignUp from "../src/Signup";
@@ -6,12 +7,18 @@ import SignUp from "../src/Signup";
 let signUp: SignUp;
 let getAccount: GetAccount;
 let deposit: Deposit;
+let connection: PgPromiseAdapter;
 
 beforeEach( () => {
-	const accountRepository = new AccountRepositoryDatabase();
+	connection = new PgPromiseAdapter();
+	const accountRepository = new AccountRepositoryDatabase(connection);
 	signUp = new SignUp(accountRepository);
 	getAccount = new GetAccount(accountRepository);
 	deposit = new Deposit(accountRepository);
+})
+
+afterEach(async () => {
+	await connection.close();
 })
 
 test("Deve fazer um depósito", async () => {
