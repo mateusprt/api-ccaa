@@ -3,13 +3,15 @@ import express, { Request, Response } from "express";
 import { AccountRepositoryDatabase } from './AccountRepository';
 import GetAccount from './GetAccount';
 import SignUp from "./Signup";
+import { PgPromiseAdapter } from './DatabaseConnection';
 
 async function main () {
     const app = express();
     app.use(express.json());
     app.use(cors());
 
-    const accountRepository = new AccountRepositoryDatabase();
+    const connection = new PgPromiseAdapter();
+    const accountRepository = new AccountRepositoryDatabase(connection);
     const signUp = new SignUp(accountRepository)
     const getAccount = new GetAccount(accountRepository)
     
