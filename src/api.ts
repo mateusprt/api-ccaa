@@ -1,36 +1,17 @@
-import cors from 'cors';
-import express, { Request, Response } from "express";
-import { AccountRepositoryDatabase } from './AccountRepository';
-import GetAccount from './GetAccount';
-import SignUp from "./Signup";
-import { PgPromiseAdapter } from './DatabaseConnection';
+import AccountController from './infra/AccountController';
+import { PgPromiseAdapter } from './infra/database/DatabaseConnection';
+import GetAccount from './application/usecase/GetAccount';
+import { ExpressAdapter } from './infra/http/HttpServer';
+import SignUp from "./application/usecase/Signup";
+import { AccountRepositoryDatabase } from './infra/repository/AccountRepository';
 
 async function main () {
-    const app = express();
-    app.use(express.json());
-    app.use(cors());
-
+    const httpServer = new ExpressAdapter();
     const connection = new PgPromiseAdapter();
     const accountRepository = new AccountRepositoryDatabase(connection);
     const signUp = new SignUp(accountRepository)
     const getAccount = new GetAccount(accountRepository)
-    
-    app.post("/signup", async (req: Request, res: Response) => {
-      try {
-        const input = req.body;
-        const output = await signUp.execute(input)
-        res.json(output);
-      } catch (err: any) {
-        res.status(422).json({ message: err.message });
-      }
-    });
-
-    app.get("/accounts/:accountId", async (req: Request, res: Response) => {
-      const accountId = req.params.accountId || '';
-      const output = await getAccount.execute(accountId);
-      res.json(output);
-    })
-
-    app.listen(3000);
+    new AccountController(httpServer, signUp, getAccount);
+    httpServer.listen(3000);
 }
 main();

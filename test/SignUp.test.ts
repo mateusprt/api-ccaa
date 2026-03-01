@@ -1,7 +1,7 @@
-import { AccountRepositoryDatabase } from "../src/AccountRepository";
-import { PgPromiseAdapter } from "../src/DatabaseConnection";
-import GetAccount from "../src/GetAccount";
-import SignUp from "../src/Signup";
+import { PgPromiseAdapter } from "../src/infra/database/DatabaseConnection";
+import GetAccount from "../src/application/usecase/GetAccount";
+import SignUp from "../src/application/usecase/Signup";
+import { AccountRepositoryDatabase } from "../src/infra/repository/AccountRepository";
 
 let signUp: SignUp;
 let getAccount: GetAccount;
