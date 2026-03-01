@@ -1,5 +1,5 @@
-import { AccountRepositoryDatabase } from './AccountRepository';
-import Asset from './Asset';
+import Asset from '../../domain/Asset';
+import { AccountRepositoryDatabase } from '../../infra/repository/AccountRepository';
 
 export default class GetAccount {
 

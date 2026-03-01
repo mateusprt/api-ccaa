@@ -3,7 +3,6 @@ import { validateCpf } from "./validateCpf";
 import { validateEmail } from "./validateEmail";
 import { validateName } from "./validateName";
 import { validatePassword } from "./validatePassword";
-
 export default class Account {
   assets: Asset[] = [];
 

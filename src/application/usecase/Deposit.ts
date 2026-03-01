@@ -1,4 +1,4 @@
-import { AccountRepositoryDatabase } from './AccountRepository';
+import { AccountRepositoryDatabase } from '../../AccountRepository';
 
 export default class Deposit {
 
