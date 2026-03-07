@@ -1,9 +1,11 @@
 import Asset from '../../domain/Asset';
-import { AccountRepositoryDatabase } from '../../infra/repository/AccountRepository';
+import { inject } from '../../infra/di/Registry';
+import AccountRepository, { AccountRepositoryDatabase } from '../../infra/repository/AccountRepository';
 
 export default class GetAccount {
 
-  constructor(readonly accountRepository: AccountRepositoryDatabase) {}
+  @inject('accountRepository')
+  accountRepository!: AccountRepository;
 
   async execute(accountId: string): Promise<Output> {
     const account = await this.accountRepository.getAccount(accountId);

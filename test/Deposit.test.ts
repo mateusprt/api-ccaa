@@ -3,6 +3,7 @@ import Deposit from "../src/application/usecase/Deposit";
 import GetAccount from "../src/application/usecase/GetAccount";
 import SignUp from "../src/application/usecase/Signup";
 import { AccountRepositoryDatabase } from "../src/infra/repository/AccountRepository";
+import Registry from "../src/infra/di/Registry";
 
 let signUp: SignUp;
 let getAccount: GetAccount;
@@ -11,10 +12,11 @@ let connection: PgPromiseAdapter;
 
 beforeEach( () => {
 	connection = new PgPromiseAdapter();
-	const accountRepository = new AccountRepositoryDatabase(connection);
-	signUp = new SignUp(accountRepository);
-	getAccount = new GetAccount(accountRepository);
-	deposit = new Deposit(accountRepository);
+	Registry.getInstance().register('connection', connection);
+	Registry.getInstance().register('accountRepository', new AccountRepositoryDatabase());
+	signUp = new SignUp();
+	getAccount = new GetAccount();
+	deposit = new Deposit();
 })
 
 afterEach(async () => {

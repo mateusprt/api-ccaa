@@ -5,6 +5,8 @@
     "rootDir": "./src",
     "outDir": "./dist",
 
+    "experimentalDecorators": true,
+
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
@@ -40,5 +42,5 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
   },
-  "include": ["src", "test"]
+  "include": ["src", "test"],
 }
