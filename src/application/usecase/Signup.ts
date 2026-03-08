@@ -16,7 +16,7 @@ export default class SignUp {
     });
     await this.accountRepository.saveAccount(account)
     return {
-        accountId: account.accountId
+        accountId: account.getAccountId()
     };
   }
 }

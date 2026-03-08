@@ -10,7 +10,7 @@ let connection: PgPromiseAdapter;
 
 beforeEach( () => {
 	connection = new PgPromiseAdapter();
-	Registry.getInstance().register('connection', connection);
+	Registry.getInstance().register('databaseConnection', connection);
 	Registry.getInstance().register('accountRepository', new AccountRepositoryDatabase());
 	signUp = new SignUp();
 	getAccount = new GetAccount();

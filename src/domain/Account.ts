@@ -1,29 +1,38 @@
 import Asset from "./Asset";
-import { validateCpf } from "./validateCpf";
-import { validateEmail } from "./validateEmail";
-import { validateName } from "./validateName";
-import { validatePassword } from "./validatePassword";
+import CPF from "./CPF";
+import Document from "./Document";
+import Email from "./Email";
+import Name from "./Name";
+import Password from "./Password";
+import UUID from "./UUID";
+
 export default class Account {
-  assets: Asset[] = [];
+  private name: Name;
+  private email: Email;
+  private document: Document;
+  private password: Password;
+  private cpf: CPF;
+  private assets: Asset[] = [];
 
   constructor(
     readonly accountId: string,
-    readonly name: string,
-    readonly email: string,
-    readonly document: string,
-    readonly password: string,
+    name: string,
+    email: string,
+    document: string,
+    password: string,
     assets: Asset[]
   ) {
-    if(!name || !validateName(name)) throw new Error( "Invalid name" );
-    if(!email || !validateEmail(email)) throw new Error( "Invalid email" );
-    if(!document || !validateCpf(document)) throw new Error( "Invalid document" );
-    if(!password || !validatePassword(password)) throw new Error( "Invalid password" );
+    this.name = new Name(name);
+    this.email = new Email(email);
+    this.document = new Document(document);
+    this.password = new Password(password); 
+    this.cpf = new CPF(document);
     this.assets = assets;
   }
 
   // padrão static factory method
   static create(name: string, email: string, document: string, password: string): Account {
-    const accountId = crypto.randomUUID();
+    const accountId = UUID.create().getValue();
     const assets: Asset[] = [];
     return new Account(accountId, name, email, document, password, assets);
   }
@@ -59,6 +68,30 @@ export default class Account {
     const asset = this.assets.find((asset: Asset) => asset.assetId === assetId);
     if (!asset) return 0;
     return asset.quantity;
+  }
+
+  getAccountId(): string {
+    return this.accountId;
+  }
+
+  getName(): string {
+    return this.name.getValue();
+  }
+
+  getEmail(): string {
+    return this.email.getValue();
+  }
+
+  getDocument(): string {
+    return this.document.getValue();
+  }
+
+  getPassword(): string {
+    return this.password.getValue();
+  }
+
+  getAssets(): Asset[] {
+    return this.assets;
   }
 
 }

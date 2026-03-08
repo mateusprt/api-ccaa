@@ -1,6 +1,6 @@
 import Asset from '../../domain/Asset';
 import { inject } from '../../infra/di/Registry';
-import AccountRepository, { AccountRepositoryDatabase } from '../../infra/repository/AccountRepository';
+import AccountRepository from '../../infra/repository/AccountRepository';
 
 export default class GetAccount {
 
@@ -10,12 +10,12 @@ export default class GetAccount {
   async execute(accountId: string): Promise<Output> {
     const account = await this.accountRepository.getAccount(accountId);
     const output = {
-      accountId: account.accountId,
-      name: account.name,
-      email:  account.email,
-      document: account.document,
-      password: account.password,
-      assets: account.assets.map((asset: Asset) => ({
+      accountId: account.getAccountId(),
+      name: account.getName(),
+      email:  account.getEmail(),
+      document: account.getDocument(),
+      password: account.getPassword(),
+      assets: account.getAssets().map((asset: Asset) => ({
         assetId: asset.assetId,
         quantity: asset.quantity
       }))
