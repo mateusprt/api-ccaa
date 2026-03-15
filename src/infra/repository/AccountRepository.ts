@@ -22,7 +22,7 @@ export class AccountRepositoryDatabase implements AccountRepository {
   async updateAccount(account: Account): Promise<void> {
     await this.databaseConnection.query("delete from ccca.account_asset where account_id = $1", [account.getAccountId()]);
     for (const asset of account.getAssets()) {
-      await this.databaseConnection.query("insert into ccca.account_asset (quantity, account_id, asset_id) values ($1, $2, $3)", [asset.quantity, account.getAccountId(), asset.assetId]);
+      await this.databaseConnection.query("insert into ccca.account_asset (quantity, account_id, asset_id, blocked_quantity) values ($1, $2, $3, $4)", [asset.quantity, account.getAccountId(), asset.assetId, asset.blockedQuantity]);
     }
   }
 
@@ -31,7 +31,7 @@ export class AccountRepositoryDatabase implements AccountRepository {
     const accountAssetsData = await this.databaseConnection.query("select * from ccca.account_asset where account_id = $1", [accountId]);
     const assets: Asset[] = []
     for(const accountAssetData of accountAssetsData) {
-      assets.push(new Asset(accountAssetData.asset_id, parseFloat(accountAssetData.quantity)));
+      assets.push(new Asset(accountAssetData.asset_id, parseFloat(accountAssetData.quantity), parseFloat(accountAssetData.blocked_quantity)));
     }
     const account = new Account(accountData.account_id, accountData.name, accountData.email, accountData.document, accountData.password, assets);
     return account;
