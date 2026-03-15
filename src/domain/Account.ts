@@ -3,6 +3,7 @@ import CPF from "./CPF";
 import Document from "./Document";
 import Email from "./Email";
 import Name from "./Name";
+import Order from "./Order";
 import Password from "./Password";
 import UUID from "./UUID";
 
@@ -53,7 +54,7 @@ export default class Account {
     if (asset) {
       asset.quantity += quantity;
     } else {
-      this.assets.push(new Asset(assetId, quantity));
+      this.assets.push(new Asset(assetId, quantity, 0));
     }
   }
 
@@ -67,7 +68,23 @@ export default class Account {
   getBalance(assetId: string): number {
     const asset = this.assets.find((asset: Asset) => asset.assetId === assetId);
     if (!asset) return 0;
-    return asset.quantity;
+    return asset.getBalance();
+  }
+
+  processOrder(order: Order): void {
+    let assetId: string;
+    let quantity: number;
+    if (order.side === "buy") {
+      assetId = order.getPaymentAssetId();
+      quantity = order.quantity * order.price;
+    } else {
+      assetId = order.getMainAssetId();
+      quantity = order.quantity;
+    }
+
+    const asset = this.assets.find((asset: Asset) => asset.assetId === assetId);
+    if (!asset || quantity > asset.getBalance()) throw new Error("Insufficient funds");
+    asset.blockedQuantity += quantity;
   }
 
   getAccountId(): string {
