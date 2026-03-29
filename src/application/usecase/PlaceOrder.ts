@@ -1,22 +1,22 @@
 import Order from "../../domain/Order";
 import { inject } from "../../infra/di/Registry";
-import AccountRepository from "../../infra/repository/AccountRepository";
 import OrderRepository from "../../infra/repository/OrderRepository";
+import WalletRepository from "../../infra/repository/WalletRepository";
 
 export default class PlaceOrder {
-  
-  @inject('accountRepository')
-  accountRepository!: AccountRepository;
 
   @inject('orderRepository')
   orderRepository!: OrderRepository;
 
+  @inject('walletRepository')
+  walletRepository!: WalletRepository;
+
   async execute(input: Input): Promise<Output> {
-    const account = await this.accountRepository.getAccount(input.accountId);
-    account.processOrder(Order.create(input.accountId, input.marketId, input.side, input.quantity, input.price));
+    const wallet = await this.walletRepository.getWallet(input.accountId);
+    wallet.processOrder(Order.create(input.accountId, input.marketId, input.side, input.quantity, input.price));
     const order = Order.create(input.accountId, input.marketId, input.side, input.quantity, input.price);
     await this.orderRepository.saveOrder(order);
-    await this.accountRepository.updateAccount(account);
+    await this.walletRepository.upsertWallet(wallet);
 
     return {
       orderId: order.getOrderId()
