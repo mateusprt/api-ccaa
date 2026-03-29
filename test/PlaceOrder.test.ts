@@ -8,6 +8,7 @@ import PlaceOrder from "../src/application/usecase/PlaceOrder";
 import { OrderRepositoryDatabase } from "../src/infra/repository/OrderRepository";
 import GetOrder from "../src/application/usecase/GetOrder";
 import e from "cors";
+import { WalletRepositoryDatabase } from "../src/infra/repository/WalletRepository";
 
 let signUp: SignUp;
 let getAccount: GetAccount;
@@ -21,6 +22,7 @@ beforeEach( () => {
 	Registry.getInstance().register('databaseConnection', connection);
 	Registry.getInstance().register('accountRepository', new AccountRepositoryDatabase());
 	Registry.getInstance().register('orderRepository', new OrderRepositoryDatabase());
+	Registry.getInstance().register('walletRepository', new WalletRepositoryDatabase());
 	placeOrder = new PlaceOrder();
 	getOrder = new GetOrder();
 	signUp = new SignUp();

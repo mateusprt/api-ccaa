@@ -3,6 +3,7 @@ import GetAccount from "../src/application/usecase/GetAccount";
 import SignUp from "../src/application/usecase/Signup";
 import { AccountRepositoryDatabase } from "../src/infra/repository/AccountRepository";
 import Registry from "../src/infra/di/Registry";
+import { WalletRepositoryDatabase } from "../src/infra/repository/WalletRepository";
 
 let signUp: SignUp;
 let getAccount: GetAccount;
@@ -12,6 +13,7 @@ beforeEach( () => {
 	connection = new PgPromiseAdapter();
 	Registry.getInstance().register('databaseConnection', connection);
 	Registry.getInstance().register('accountRepository', new AccountRepositoryDatabase());
+	Registry.getInstance().register('walletRepository', new WalletRepositoryDatabase());
 	signUp = new SignUp();
 	getAccount = new GetAccount();
 })
