@@ -16,7 +16,9 @@ export default class GetOrder {
       quantity: Number(order.quantity),
       price: order.price,
       timestamp: order.timestamp,
-      status: order.status
+      status: order.getStatus(),
+      fillQuantity: order.getFillQuantity(),
+      fillPrice: order.getFillPrice()
     };
   }
 }
@@ -30,4 +32,6 @@ type Output = {
   price: number;
   timestamp: Date;
   status: string;
+  fillQuantity: number;
+  fillPrice: number;
 }
